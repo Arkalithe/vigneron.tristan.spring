@@ -1,8 +1,12 @@
 package fr.humanbooster.vignerontristan.service;
 
+import fr.humanbooster.vignerontristan.dto.MapDto;
 import fr.humanbooster.vignerontristan.dto.UserRegisterDto;
+import fr.humanbooster.vignerontristan.entity.Map;
 import fr.humanbooster.vignerontristan.repository.UserRepository;
 import fr.humanbooster.vignerontristan.entity.User;
+import fr.humanbooster.vignerontristan.service.interfaces.ServiceIdInterface;
+import fr.humanbooster.vignerontristan.service.interfaces.ServiceInterfaceBase;
 import fr.humanbooster.vignerontristan.service.utils.FileUploaderService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,22 +24,25 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService implements
+        ServiceInterfaceBase<User, UserRegisterDto>,
+        ServiceIdInterface<User, String>,
+        UserDetailsService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-
+    @Override
     public User create(UserRegisterDto userDto) {
         return userRepository.saveAndFlush(objectRegisterFromDto(new User(), userDto));
     }
-
+    @Override
     public User findById(String id) {
         return userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-
+    @Override
     public List<User> list() {
         return userRepository.findAll();
     }
@@ -63,9 +70,6 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public User findByUsername(Principal principal) {
-        return userRepository.findByUsername(principal.getName());
-    }
 
     public Boolean uploadImage(MultipartFile file, Principal principal) {
         if (principal != null) {

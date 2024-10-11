@@ -48,10 +48,11 @@ public class SecurityConfig {
 
                                         AntPathRequestMatcher.antMatcher("/api/rounds"),
                                         AntPathRequestMatcher.antMatcher("/api/coordinates")
-                                ).authenticated()                                .requestMatchers(
+                                ).authenticated()
+                                .requestMatchers(
                                         AntPathRequestMatcher.antMatcher("/api/maps/**"),
                                         AntPathRequestMatcher.antMatcher( "/api/maps")
-                                ).hasRole("ADMIN")
+                                ).hasAuthority("ADMIN")
 
                 );
         return http.build();
