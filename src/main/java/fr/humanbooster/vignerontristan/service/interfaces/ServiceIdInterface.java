@@ -6,5 +6,4 @@ public interface ServiceIdInterface<T, L> {
 
     T findById(L id);
 
-    List<?> list();
 }

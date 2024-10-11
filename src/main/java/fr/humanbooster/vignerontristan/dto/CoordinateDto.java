@@ -6,6 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 public class CoordinateDto {
 
-    private Long id;
+    private String latitude;
+    private String longitude;
 
 }
