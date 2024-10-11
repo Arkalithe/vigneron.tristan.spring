@@ -3,14 +3,18 @@ package fr.humanbooster.vignerontristan.service;
 import fr.humanbooster.vignerontristan.dto.UserRegisterDto;
 import fr.humanbooster.vignerontristan.repository.UserRepository;
 import fr.humanbooster.vignerontristan.entity.User;
-import fr.humanbooster.vignerontristan.dto.UserDto;
+import fr.humanbooster.vignerontristan.service.utils.FileUploaderService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -19,6 +23,8 @@ import java.util.List;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
 
     public User create(UserRegisterDto userDto) {
@@ -35,8 +41,12 @@ public class UserService implements UserDetailsService {
     }
 
     private User objectRegisterFromDto(User user, UserRegisterDto userDto) {
-
-        //Faire les xxx.set(xxx.get());
+        user.setEmail(userDto.getEmail());
+        user.setUsername(userDto.getUsername());
+        user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        user.setAvatar(userDto.getAvatar());
+        user.setBirthedAt(userDto.getBirthedAt());
+        user.setCreatedAt(LocalDateTime.now());
         return user;
     }
 
@@ -51,5 +61,28 @@ public class UserService implements UserDetailsService {
 
         );
 
+    }
+
+    public User findByUsername(Principal principal) {
+        return userRepository.findByUsername(principal.getName());
+    }
+
+    public Boolean uploadImage(MultipartFile file, Principal principal) {
+        if (principal != null) {
+            User user = findOneByEmail(principal.getName());
+            FileUploaderService fileUploaderService = new FileUploaderService("uploads/user");
+            String filename = fileUploaderService.save(file);
+            if (filename != null) {
+                user.setAvatar(filename);
+                userRepository.saveAndFlush(user);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public User findOneByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(EntityNotFoundException::new);
     }
 }

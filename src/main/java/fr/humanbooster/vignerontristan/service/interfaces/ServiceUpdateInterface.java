@@ -2,7 +2,7 @@ package fr.humanbooster.vignerontristan.service.interfaces;
 
 import java.util.Optional;
 
-public interface ServiceDeleteInterface<T, L, U> {
+public interface ServiceUpdateInterface<T, L, U> {
 
     T update(U object, L id);
 

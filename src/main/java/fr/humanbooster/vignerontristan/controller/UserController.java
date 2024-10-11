@@ -1,19 +1,38 @@
 package fr.humanbooster.vignerontristan.controller;
 
-import fr.humanbooster.vignerontristan.dto.UserDto;
+import com.fasterxml.jackson.annotation.JsonView;
+import fr.humanbooster.vignerontristan.entity.Map;
+import fr.humanbooster.vignerontristan.entity.User;
+import fr.humanbooster.vignerontristan.jsonviews.MapJsonview;
+import fr.humanbooster.vignerontristan.jsonviews.UserJsonview;
 import fr.humanbooster.vignerontristan.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 @AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/me")
+    @JsonView( UserJsonview.UserShowView.class)
+    public User getGameById( Principal principal) {
+        return userService.findOneByEmail(principal.getName());
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<Boolean> uploadPhoto(
+            @RequestParam("userAvatar") MultipartFile file,
+            Principal principal
+    ) {
+        return new ResponseEntity<>(userService.uploadImage(file, principal), HttpStatus.ACCEPTED);
+    }
 
 }

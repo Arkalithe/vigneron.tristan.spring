@@ -22,10 +22,10 @@ public class UserSecurityController {
     private final UserService userService;
     private final JwtAuthenticatorService jwtAuthenticatorService;
 
-//    @PostMapping("/register")
-//    public User register(@Valid @RequestBody UserRegisterDto user) {
-//        return userService.create(user);
-//    }
+    @PostMapping("/register")
+    public User register(@Valid @RequestBody UserRegisterDto user) {
+        return userService.create(user);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody UserLoginDto user) {

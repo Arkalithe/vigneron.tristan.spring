@@ -37,18 +37,20 @@ public class SecurityConfig {
                                 .requestMatchers("/api/login", "/api/register").permitAll()
                                 .requestMatchers(
                                         AntPathRequestMatcher.antMatcher("/v3/api-docs/**"),
-                                        AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
-                                        AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/listings"),
-                                        AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/listings")
-
+                                        AntPathRequestMatcher.antMatcher("/swagger-ui/**")
                                 ).permitAll()
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/users"),
-                                        AntPathRequestMatcher.antMatcher("/api/users")
-                                ).authenticated()
-                                .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/models"),
-                                        AntPathRequestMatcher.antMatcher("/api/models")
+                                        AntPathRequestMatcher.antMatcher("/api/user/me"),
+                                        AntPathRequestMatcher.antMatcher("/api/user/upload"),
+                                        AntPathRequestMatcher.antMatcher("/api/user"),
+                                        AntPathRequestMatcher.antMatcher("/api/game/**"),
+                                        AntPathRequestMatcher.antMatcher("/api/game"),
+
+                                        AntPathRequestMatcher.antMatcher("/api/rounds"),
+                                        AntPathRequestMatcher.antMatcher("/api/coordinates")
+                                ).authenticated()                                .requestMatchers(
+                                        AntPathRequestMatcher.antMatcher("/api/maps/**"),
+                                        AntPathRequestMatcher.antMatcher( "/api/maps")
                                 ).hasRole("ADMIN")
 
                 );

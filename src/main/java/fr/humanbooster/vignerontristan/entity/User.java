@@ -2,9 +2,12 @@ package fr.humanbooster.vignerontristan.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fr.humanbooster.vignerontristan.jsonviews.GameJsonview;
+import fr.humanbooster.vignerontristan.jsonviews.RoundJsonview;
+import fr.humanbooster.vignerontristan.jsonviews.UserJsonview;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,28 +28,34 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @JsonView( GameJsonview.GameListView.class)
+    @JsonView({GameJsonview.GameListView.class, UserJsonview.UserShowView.class})
     private String id;
 
     @NotBlank
-    @JsonView( GameJsonview.GameListView.class)
+    @JsonView({GameJsonview.GameListView.class, UserJsonview.UserShowView.class})
     private String username;
 
     @NotBlank
+    @JsonView( UserJsonview.UserShowView.class)
     private String email;
 
     @NotBlank
     private String password;
 
+    @JsonView( UserJsonview.UserShowView.class)
     private String avatar;
+
     @NotNull
+    @Past
+    @JsonView( UserJsonview.UserShowView.class)
     private LocalDate birthedAt;
 
     @NotNull
+    @JsonView( UserJsonview.UserShowView.class)
     private LocalDateTime createdAt;
 
     @NotNull
-    @JsonView( GameJsonview.GameListView.class)
+    @JsonView({GameJsonview.GameListView.class, UserJsonview.UserShowView.class})
     private Integer level = 1;
 
     @NotBlank
@@ -55,6 +64,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Game> game = new ArrayList<>();
 
+    @JsonView( UserJsonview.UserShowView.class)
     private Boolean getIsAdmin() {
         return roles.contains("ROLE_ADMIN");
     }
